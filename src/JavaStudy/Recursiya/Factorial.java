@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class Factorial {
-    HashSet<String> s = new TreeSet<String>();
     public static void main(String[] args) {
         /**
          * 4! = 4*3*2*1
