@@ -1,4 +1,4 @@
-package Net_Thread;
+package Net_Thread.SimpleMessage;
 
 import java.io.PrintWriter;
 import java.net.ServerSocket;
