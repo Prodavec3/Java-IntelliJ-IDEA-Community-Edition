@@ -11,6 +11,7 @@ import java.net.Socket;
 /**
  * Версия чата, которая умеет отправлять сообщения на сервер, но не способна принимать их от других участников
  */
+
 public class SimpleChatClientA {
     JTextField outgoing;
     PrintWriter writer;

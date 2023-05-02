@@ -12,24 +12,9 @@ import java.util.Iterator;
 public class SimpleChatServer {
     ArrayList clientOutputStreams;
 
-    public class ClientHandler implements Runnable{
+    public class ClientHandler implements Runnable {
         BufferedReader reader;
         Socket socket;
-
-        @Override
-        public void run() {
-            String message;
-
-            while (true){
-                try {
-                    if (!((message = reader.readLine()) != null)) break;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                System.out.println("Сообщение с клиента:\n" + message);
-                tellEveryone(message);
-            }
-        }
 
         public ClientHandler(Socket clientSocket){
             try {
@@ -40,7 +25,22 @@ public class SimpleChatServer {
                 throw new RuntimeException(e);
             }
         }
+
+        @Override
+        public void run() {
+            String message;
+
+            try {
+                while ((message = reader.readLine()) != null) {
+                    System.out.println("Сообщение с клиента:\n" + message);
+                    tellEveryone(message);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 
     public static void main(String[] args) {
         new SimpleChatServer().go();
@@ -49,28 +49,33 @@ public class SimpleChatServer {
     public void go(){
         clientOutputStreams = new ArrayList();
         try {
-            ServerSocket serverSocket = new ServerSocket(5000);
+            ServerSocket serverSocket = new ServerSocket(5005);
 
             while (true){
                 Socket clientSocket = serverSocket.accept(); // Блокирует программу и ждет подключения клиента по порту
                 PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
                 clientOutputStreams.add(writer);
 
-                Thread t =new Thread(new ClientHandler(clientSocket));
+                Thread t = new Thread(new ClientHandler(clientSocket));
                 t.start();
                 System.out.println("got a connection");
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void tellEveryone(String message){
         Iterator it = clientOutputStreams.iterator();
         while (it.hasNext()){
-            PrintWriter writer = (PrintWriter) it.next();
-            writer.println(message);
-            writer.flush();
+            try {
+                PrintWriter writer = (PrintWriter) it.next();
+                writer.println(message);
+                writer.flush();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
