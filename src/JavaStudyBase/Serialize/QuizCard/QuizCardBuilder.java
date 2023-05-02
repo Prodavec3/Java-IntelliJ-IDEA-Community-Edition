@@ -1,4 +1,4 @@
-package JavaStudyBase.Serialize;
+package JavaStudyBase.Serialize.QuizCard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -144,7 +144,7 @@ public class QuizCardBuilder {
 
     }
 
-    public class QuizCard{
+    public static class QuizCard{
         private String Question;
         private String Answer;
 
