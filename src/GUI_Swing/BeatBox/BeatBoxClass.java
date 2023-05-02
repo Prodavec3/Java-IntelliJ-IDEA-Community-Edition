@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -53,6 +54,14 @@ public class BeatBoxClass {
         JButton downTempo = new JButton("Tempo Down");
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(new MySendListener());
+        buttonBox.add(saveButton);
+
+        JButton restoreButton = new JButton("Restore");
+        restoreButton.addActionListener(new MyReadInListener());
+        buttonBox.add(restoreButton);
 
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++){
@@ -170,6 +179,58 @@ public class BeatBoxClass {
         }
     }
 
+    public class MySendListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) { // Все что происходит при нажатии элементов, которые в прослушке
+            boolean[] checkboxState = new boolean[256]; // создаем булев массив для хранения состояния каждого флажка
+
+            for (int i = 0; i < 256; i++){
+                JCheckBox check = (JCheckBox) checkBoxList.get(i);
+                if (check.isSelected()){
+                    checkboxState[i] = true;
+                }
+            }
+
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(new File("Checkbox.ser"));
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(checkboxState);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
+    }
+
+    public class MyReadInListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean[] checkBoxState = null;
+
+            try {
+                FileInputStream fileInputStream = new FileInputStream(new File("Checkbox.ser"));
+                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                checkBoxState = (boolean[]) objectInputStream.readObject();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            for (int i = 0; i < 256; i++){
+                JCheckBox check = (JCheckBox) checkBoxList.get(i);
+                if (checkBoxState[i]){
+                    check.setSelected(true);
+                } else {
+                    check.setSelected(false);
+                }
+            }
+
+            sequencer.stop();
+            buildTrackAndStart();
+        }
+    }
+
     /**
      * makeTracks создает события для одного инструмента за каждый проход цикла для всех 16 тактов.
      * Можно получить int[] для Bass Drum и каждый элемент массива будет содержать либо клавишу этого инструмента либо 0.
@@ -198,4 +259,6 @@ public class BeatBoxClass {
         }
         return event;
     }
+
+
 }
