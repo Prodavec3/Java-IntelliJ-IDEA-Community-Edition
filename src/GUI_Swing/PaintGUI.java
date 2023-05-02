@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
+/**
+ * Варианты что можно нарисовать
+ */
 public class PaintGUI extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
