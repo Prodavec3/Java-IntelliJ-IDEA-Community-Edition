@@ -179,6 +179,9 @@ public class BeatBoxClass {
         }
     }
 
+    /**
+     * Файл сохранения будет перезаписываться с новым сохранением, необходимо использовать JFileChooser для создания различных схем сохранения
+     */
     public class MySendListener implements ActionListener{
 
         @Override
